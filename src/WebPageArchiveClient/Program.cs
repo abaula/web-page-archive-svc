@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Grpc.Net.Client;
-using WebPageArchive.GprsProto;
+using WebPageArchive.GrpcProto;
 
 var channel = GrpcChannel.ForAddress("http://localhost:8000"); // ваш порт сервера
 var client = new PageDownloader.PageDownloaderClient(channel);

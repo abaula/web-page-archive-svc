@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "WebPageArchive.GprsProto";
+option csharp_namespace = "WebPageArchive.GrpcProto";
 
 package pagedownload;
 

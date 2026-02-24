@@ -1,6 +1,6 @@
 using System.IO.Compression;
 using Grpc.Core;
-using WebPageArchive.GprsProto;
+using WebPageArchive.GrpcProto;
 using WebPageArchive.Services.Abstractions;
 
 namespace WebPageArchive.Services
