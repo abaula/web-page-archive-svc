@@ -1,60 +1,43 @@
-﻿using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Playwright;
+using System.Net;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using WebPageArchive.Services;
 
-namespace WebPageArchive;
-
-internal class Program
+namespace WebPageArchive
 {
-    public static async Task Main()
+    public static class Program
     {
-        using var playwright = await Playwright.CreateAsync();
-        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+        public static async Task Main(string[] args)
         {
-            Headless = true
-        });
-        await using var context = await browser.NewContextAsync();
-        var page = await context.NewPageAsync();
-        var gotoOptions = new PageGotoOptions
-        {
-            WaitUntil = WaitUntilState.DOMContentLoaded,
-            Timeout = 60000
-        };
+            // Создаём builder для хоста ASP.NET Core.
+            var builder = WebApplication.CreateBuilder(args);
 
-        await page.GotoAsync("https://ixbt.com", gotoOptions);
-        /*
-        await page.ScreenshotAsync(new PageScreenshotOptions
-        {
-            Path = "screenshot.png",
-            FullPage = true
-        });
-        */
-
-        // Создаём CDP‑сессию для страницы
-        await using var client = await context.NewCDPSessionAsync(page);   // аналог new_cdp_session в Python/JS [web:61]
-
-        // Вызываем Page.captureSnapshot, формат по умолчанию = "mhtml" [web:56][web:63]
-        var result = await client.SendAsync("Page.captureSnapshot");
-
-        // В result лежит словарь, вытаскиваем поле "data"
-        if (result != null)
-        {
-            // гарантируем ненулевую строку
-            var jsonString = result.ToString()!;
-            var mhtmlJson = JsonDocument.Parse(jsonString);
-            foreach(var el in mhtmlJson.RootElement.EnumerateObject())
+            // ---------- Настройка Kestrel под gRPC ----------
+            builder.WebHost.ConfigureKestrel(options =>
             {
-                var a = el;
-            }
+                options.Listen(IPAddress.Any, 8000, listenOptions =>
+                {
+                    // gRPC требует HTTP/2
+                    listenOptions.Protocols = HttpProtocols.Http2;
 
+                    // Для простоты оставляем без TLS (http://localhost:8000).
+                    // В проде можно добавить UseHttps(...) и ходить по https.
+                });
+            });
 
-            var mhtml = mhtmlJson.RootElement.GetProperty("data").GetString();
+            // ---------- DI и gRPC ----------
+            // Регистрируем gRPC‑инфраструктуру
+            builder.Services.AddGrpc();
+            ModuleBootstraper.Bootstrap(builder.Services);
+            var app = builder.Build();
 
-            await File.WriteAllTextAsync("page.mhtml", mhtml ?? "");
+            // Configure the HTTP request pipeline.
+            app.MapGrpcService<DownloaderService>();
 
-            Console.WriteLine("Saved to page.mhtml");
+            // Простой HTTP‑endpoint, чтобы быстро проверить, что сервис жив
+            app.MapGet("/", () => "gRPC server (.NET 8, Kestrel) listening on http://localhost:8000");
+
+            // Запуск веб‑приложения (блокирует Main до остановки)
+            await app.RunAsync();
         }
-
-        await page.CloseAsync();
     }
 }
