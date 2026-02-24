@@ -17,7 +17,7 @@
   </ItemGroup>
 
    <ItemGroup>
-    <Protobuf Include="Protos\page_downloader.proto" GrpcServices="Client" />
+    <Protobuf Include="..\Protos\page_downloader.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

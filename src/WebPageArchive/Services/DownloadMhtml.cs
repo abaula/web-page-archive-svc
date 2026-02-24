@@ -30,10 +30,10 @@ namespace WebPageArchive.Services
             // Вызываем Page.captureSnapshot, формат по умолчанию = "mhtml"
             var result = await client.SendAsync("Page.captureSnapshot");
 
-            // В result лежит словарь, вытаскиваем поле "data"
             if (result == null)
                 return default;
 
+            // В result лежит JSON словарь, вытаскиваем поле "data"
             var jsonString = result.ToString()!;
             var mhtmlJson = JsonDocument.Parse(jsonString);
             return mhtmlJson.RootElement.GetProperty("data").GetString();
