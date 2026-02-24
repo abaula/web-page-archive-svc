@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "src/WebPageArchive"
+		},
+		{
+			"path": "src/WebPageArchiveClient"
 		}
 	],
 	"settings": {}
