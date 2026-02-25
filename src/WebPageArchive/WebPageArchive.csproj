@@ -16,4 +16,12 @@
     <PackageReference Include="Microsoft.Playwright" Version="1.58.0" />
   </ItemGroup>
 
+   <Choose>
+    <When Condition="'$(Configuration)' == 'Release'">
+      <ItemGroup>
+        <Content Remove="appsettings.Development.json" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
 </Project>
