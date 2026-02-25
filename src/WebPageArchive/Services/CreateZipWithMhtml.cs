@@ -5,11 +5,11 @@ namespace WebPageArchive.Services;
 
 class CreateZipWithMhtml : ICreateZipWithMhtml
 {
-    private readonly Lazy<IZipWriter> _zipWriter;
+    private readonly Lazy<IWriteToZipArchive> _writeToZipArchive;
 
-    public CreateZipWithMhtml(Lazy<IZipWriter> zipWriter)
+    public CreateZipWithMhtml(Lazy<IWriteToZipArchive> writeToZipArchive)
     {
-        _zipWriter = zipWriter;
+        _writeToZipArchive = writeToZipArchive;
     }
 
     public byte[] Execute(string mhtml, string fileName)
@@ -22,7 +22,7 @@ class CreateZipWithMhtml : ICreateZipWithMhtml
         using var ms = new MemoryStream();
         using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
         {
-            _zipWriter.Value.WriteMhtml(archive, mhtml, fileName);
+            _writeToZipArchive.Value.Execute(archive, mhtml, fileName);
         }
 
         // Take bytes only after the archive is closed.

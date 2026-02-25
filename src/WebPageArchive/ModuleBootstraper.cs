@@ -25,7 +25,7 @@ static class ModuleBootstraper
 
         services.AddScopedWithLazy<IDownloadMhtml, DownloadMhtml>();
         services.AddScopedWithLazy<ICreateZipWithMhtml, CreateZipWithMhtml>();
-        services.AddScopedWithLazy<IZipWriter, ZipWriter>();
+        services.AddScopedWithLazy<IWriteToZipArchive, WriteToZipArchive>();
         services.AddScopedWithLazy<IDownloadPage, DownloadPage>();
         services.AddScopedWithLazy<ICreateRequest, CreateRequest>();
         services.AddScopedWithLazy<ICreateResponse, CreateResponse>();
