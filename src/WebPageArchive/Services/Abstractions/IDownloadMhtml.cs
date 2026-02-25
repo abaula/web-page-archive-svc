@@ -1,8 +1,6 @@
+namespace WebPageArchive.Services.Abstractions;
 
-namespace WebPageArchive.Services.Abstractions
+interface IDownloadMhtml
 {
-    interface IDownloadMhtml
-    {
-        Task<string?> Execute(string url);
-    }
+    Task<string?> Execute(string url);
 }
