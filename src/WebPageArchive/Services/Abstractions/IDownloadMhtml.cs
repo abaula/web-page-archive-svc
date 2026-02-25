@@ -3,6 +3,6 @@ namespace WebPageArchive.Services.Abstractions
 {
     interface IDownloadMhtml
     {
-        Task<string?> Download(string url);
+        Task<string?> Execute(string url);
     }
 }

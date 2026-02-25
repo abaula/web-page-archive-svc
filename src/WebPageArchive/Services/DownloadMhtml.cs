@@ -13,15 +13,14 @@ namespace WebPageArchive.Services
             _browser = browser;
         }
 
-        public async Task<string?> Download(string url)
+        public async Task<string?> Execute(string url)
         {
             await using var context = await _browser.NewContextAsync();
             var page = await context.NewPageAsync();
 
             var gotoOptions = new PageGotoOptions
             {
-                WaitUntil = WaitUntilState.DOMContentLoaded,
-                Timeout = 60000
+                WaitUntil = WaitUntilState.DOMContentLoaded
             };
             await page.GotoAsync(url, gotoOptions);
             // Создаём CDP‑сессию для страницы

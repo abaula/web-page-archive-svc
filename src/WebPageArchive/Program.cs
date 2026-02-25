@@ -1,5 +1,3 @@
-using System.Net;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using WebPageArchive.Services;
 
 namespace WebPageArchive
@@ -8,35 +6,24 @@ namespace WebPageArchive
     {
         public static async Task Main(string[] args)
         {
-            // Создаём builder для хоста ASP.NET Core.
+            // Create builder for ASP.NET Core host.
             var builder = WebApplication.CreateBuilder(args);
 
-            // ---------- Настройка Kestrel под gRPC ----------
-            builder.WebHost.ConfigureKestrel(options =>
+            // Configue Kestrel for gRPC.
+            builder.WebHost.ConfigureKestrel((context, options) =>
             {
-                options.Listen(IPAddress.Any, 8000, listenOptions =>
-                {
-                    // gRPC требует HTTP/2
-                    listenOptions.Protocols = HttpProtocols.Http2;
-
-                    // Для простоты оставляем без TLS (http://localhost:8000).
-                    // В проде можно добавить UseHttps(...) и ходить по https.
-                });
+                options.Configure(context.Configuration.GetSection("Kestrel"));
             });
-
-            // ---------- DI и gRPC ----------
-            // Регистрируем gRPC‑инфраструктуру
+            // Register gRPC.
             builder.Services.AddGrpc();
+            // Register Services.
             ModuleBootstraper.Bootstrap(builder.Services);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             app.MapGrpcService<DownloaderService>();
 
-            // Простой HTTP‑endpoint, чтобы быстро проверить, что сервис жив
-            app.MapGet("/", () => "gRPC server (.NET 8, Kestrel) listening on http://localhost:8000");
-
-            // Запуск веб‑приложения (блокирует Main до остановки)
+            // Run web-app.
             await app.RunAsync();
         }
     }
