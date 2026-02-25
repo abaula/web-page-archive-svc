@@ -34,7 +34,7 @@ cd web-page-archive-svc
 # build solution
 dotnet build src/WebPageArchive.sln
 # Install PowerShell (Ubuntu)
-sudo apt-get update && apt install -y powershell
+sudo apt-get update && sudo apt-get install -y powershell
 # Install Chromium browser (headless only)
 pwsh src/WebPageArchive/bin/Debug/net8.0/playwright.ps1 install --with-deps --only-shell chromium
 ```
