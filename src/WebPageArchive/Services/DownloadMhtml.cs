@@ -2,42 +2,41 @@ using System.Text.Json;
 using Microsoft.Playwright;
 using WebPageArchive.Services.Abstractions;
 
-namespace WebPageArchive.Services
+namespace WebPageArchive.Services;
+
+class DownloadMhtml : IDownloadMhtml
 {
-    class DownloadMhtml : IDownloadMhtml
+    private readonly IBrowser _browser;
+
+    public DownloadMhtml(IBrowser browser)
     {
-        private readonly IBrowser _browser;
+        _browser = browser;
+    }
 
-        public DownloadMhtml(IBrowser browser)
+    public async Task<string?> Execute(string url)
+    {
+        await using var context = await _browser.NewContextAsync();
+        var page = await context.NewPageAsync();
+
+        // Dowload page.
+        var gotoOptions = new PageGotoOptions
         {
-            _browser = browser;
-        }
+            WaitUntil = WaitUntilState.DOMContentLoaded
+        };
+        await page.GotoAsync(url, gotoOptions);
 
-        public async Task<string?> Execute(string url)
-        {
-            await using var context = await _browser.NewContextAsync();
-            var page = await context.NewPageAsync();
+        // Create CDP‑session for the page
+        await using var session = await context.NewCDPSessionAsync(page);
 
-            // Dowload page.
-            var gotoOptions = new PageGotoOptions
-            {
-                WaitUntil = WaitUntilState.DOMContentLoaded
-            };
-            await page.GotoAsync(url, gotoOptions);
+        // Call Page.captureSnapshot, default response format = "mhtml"
+        var result = await session.SendAsync("Page.captureSnapshot");
 
-            // Create CDP‑session for the page
-            await using var session = await context.NewCDPSessionAsync(page);
+        if (result == null)
+            return default;
 
-            // Call Page.captureSnapshot, default response format = "mhtml"
-            var result = await session.SendAsync("Page.captureSnapshot");
-
-            if (result == null)
-                return default;
-
-            // Get "data" field from json dictionary.
-            var jsonString = result.ToString()!;
-            var mhtmlJson = JsonDocument.Parse(jsonString);
-            return mhtmlJson.RootElement.GetProperty("data").GetString();
-        }
+        // Get "data" field from json dictionary.
+        var jsonString = result.ToString()!;
+        var mhtmlJson = JsonDocument.Parse(jsonString);
+        return mhtmlJson.RootElement.GetProperty("data").GetString();
     }
 }
