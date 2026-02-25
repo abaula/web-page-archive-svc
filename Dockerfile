@@ -7,11 +7,9 @@ RUN dotnet publish ./src/WebPageArchive/WebPageArchive.csproj -c Release -r linu
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Зависимости для запуска браузеров
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates wget gnupg
 
-# Install Powershell
 RUN wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
