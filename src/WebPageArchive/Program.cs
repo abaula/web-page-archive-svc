@@ -6,7 +6,7 @@ namespace WebPageArchive
     {
         public static async Task Main(string[] args)
         {
-            // Create builder for ASP.NET Core host.
+            // Create builder for ASP.NET host.
             var builder = WebApplication.CreateBuilder(args);
 
             // Configue Kestrel for gRPC.
@@ -16,14 +16,14 @@ namespace WebPageArchive
             });
             // Register gRPC.
             builder.Services.AddGrpc();
-            // Register Services.
+            // Register App Services.
             ModuleBootstraper.Bootstrap(builder.Services);
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configure the gRPC request pipeline.
             app.MapGrpcService<DownloaderService>();
 
-            // Run web-app.
+            // Run App.
             await app.RunAsync();
         }
     }

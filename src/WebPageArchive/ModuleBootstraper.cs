@@ -8,14 +8,15 @@ namespace WebPageArchive
     {
         public static void Bootstrap(IServiceCollection services)
         {
-            // IPlaywright как singleton, инициализируется асинхронно
+            // IPlaywright as singleton.
             services.AddSingleton<IPlaywright>(sp =>
                 Playwright.CreateAsync().GetAwaiter().GetResult());
 
-            // IBrowser как singleton, шарится между всеми сервисами
+            // IBrowser as singleton.
             services.AddSingleton<IBrowser>(sp =>
             {
                 var playwright = sp.GetRequiredService<IPlaywright>();
+                // Use Chromium.
                 return playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
                 {
                     Headless = true

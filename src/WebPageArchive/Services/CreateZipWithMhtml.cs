@@ -15,11 +15,10 @@ class CreateZipWithMhtml : ICreateZipWithMhtml
     public byte[] Execute(string mhtml, string fileName)
     {
         using var ms = new MemoryStream();
-        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        using (var archive = new ZipArchive(ms, ZipArchiveMode.Create))
         {
             _zipWriter.Value.WriteMhtml(archive, mhtml, fileName);
+            return ms.ToArray();
         }
-
-        return ms.ToArray();
     }
 }

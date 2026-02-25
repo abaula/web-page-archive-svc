@@ -18,21 +18,23 @@ namespace WebPageArchive.Services
             await using var context = await _browser.NewContextAsync();
             var page = await context.NewPageAsync();
 
+            // Dowload page.
             var gotoOptions = new PageGotoOptions
             {
                 WaitUntil = WaitUntilState.DOMContentLoaded
             };
             await page.GotoAsync(url, gotoOptions);
-            // Создаём CDP‑сессию для страницы
-            await using var client = await context.NewCDPSessionAsync(page);
 
-            // Вызываем Page.captureSnapshot, формат по умолчанию = "mhtml"
-            var result = await client.SendAsync("Page.captureSnapshot");
+            // Create CDP‑session for the page
+            await using var session = await context.NewCDPSessionAsync(page);
+
+            // Call Page.captureSnapshot, default response format = "mhtml"
+            var result = await session.SendAsync("Page.captureSnapshot");
 
             if (result == null)
                 return default;
 
-            // В result лежит JSON словарь, вытаскиваем поле "data"
+            // Get "data" field from json dictionary.
             var jsonString = result.ToString()!;
             var mhtmlJson = JsonDocument.Parse(jsonString);
             return mhtmlJson.RootElement.GetProperty("data").GetString();
