@@ -1,9 +1,7 @@
+namespace WebPageArchive.Dto;
 
-namespace WebPageArchive.Dto
-{
-    record MhtmlResult
-    (
-        string? Mhtml,
-        bool Timeout
-    );
-}
+record MhtmlResult
+(
+    string? Mhtml,
+    bool Timeout
+);
