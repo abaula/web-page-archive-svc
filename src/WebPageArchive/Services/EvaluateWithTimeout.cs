@@ -6,7 +6,7 @@ namespace WebPageArchive.Services;
 
 class EvaluateWithTimeout : IEvaluateWithTimeout
 {
-    public async Task Execute(IPage page, PageEvaluateSettings settings)
+    public async Task<bool> Execute(IPage page, PageEvaluateSettings settings)
     {
         var evalTask = page.EvaluateAsync<object>(settings.Script);
         var delayTask = Task.Delay(settings.Timeout);
@@ -20,6 +20,10 @@ class EvaluateWithTimeout : IEvaluateWithTimeout
             // inside evalTask would remain unobserved and could lead to silent failures
             // or background task exceptions later.
             await evalTask;
+            return false;
         }
+
+        // Timeout occured.
+        return true;
     }
 }

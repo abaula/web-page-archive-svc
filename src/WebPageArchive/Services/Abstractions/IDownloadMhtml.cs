@@ -4,5 +4,5 @@ namespace WebPageArchive.Services.Abstractions;
 
 interface IDownloadMhtml
 {
-    Task<string?> Execute(Request request);
+    Task<MhtmlResult?> Execute(Request request);
 }

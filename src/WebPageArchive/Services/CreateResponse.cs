@@ -11,7 +11,8 @@ class CreateResponse : ICreateResponse
         return new DownloadResponse
         {
             OriginalUrl = response.OriginalUrl,
-            ZipArchive = Google.Protobuf.ByteString.CopyFrom(response.ZipArchive)
+            ZipArchive = Google.Protobuf.ByteString.CopyFrom(response.ZipArchive),
+            WaitTimeout = response.Timeout
         };
     }
 }
