@@ -10,6 +10,6 @@ class CreateRequest : ICreateRequest
     {
         var waitScript = request.HasWaitScript ? request.WaitScript : null;
         var waitTimeoutMs = request.HasWaitTimeoutMs ? (int?)request.WaitTimeoutMs : null;
-        return new Request(request.Url, waitScript, waitTimeoutMs);
+        return new Request(request.Url, request.UseDefaultWaitScript, waitScript, waitTimeoutMs);
     }
 }

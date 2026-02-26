@@ -6,8 +6,9 @@ package pagedownload;
 
 message DownloadRequest {
   string url = 1;
-  optional string wait_script = 2;
-  optional int32 wait_timeout_ms = 3;
+  bool use_default_wait_script = 2;
+  optional string wait_script = 3;
+  optional int32 wait_timeout_ms = 4;
 }
 
 message DownloadResponse {
