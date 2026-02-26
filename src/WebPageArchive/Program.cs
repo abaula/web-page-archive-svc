@@ -15,7 +15,12 @@ public static class Program
             options.Configure(context.Configuration.GetSection("Kestrel"));
         });
         // Register gRPC.
-        builder.Services.AddGrpc();
+        var grpcMaxSend = builder.Configuration.GetValue<int?>("Grpc:MaxSendMessageSize");
+        builder.Services.AddGrpc(options =>
+        {
+            if (grpcMaxSend.HasValue)
+                options.MaxSendMessageSize = grpcMaxSend.Value;
+        });
         // Register App Services.
         ModuleBootstraper.Bootstrap(builder.Services, builder.Configuration);
         var app = builder.Build();

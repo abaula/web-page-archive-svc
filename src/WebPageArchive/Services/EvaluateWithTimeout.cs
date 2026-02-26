@@ -14,12 +14,12 @@ class EvaluateWithTimeout : IEvaluateWithTimeout
 
         if (completed == evalTask)
         {
-            // важно доawait-ать, чтобы получить исключение, если оно было
+            // It's important to await the task to properly observe any exception
+            // that may have occurred during the script evaluation. Simply checking which task
+            // completed first is not enough — without awaiting, potential exceptions
+            // inside evalTask would remain unobserved and could lead to silent failures
+            // or background task exceptions later.
             await evalTask;
         }
-
-        // если нужно – можно бросить исключение вместо null
-        //throw new TimeoutException(
-        //    $"page.EvaluateAsync timed out after {timeoutMs} ms.");
     }
 }

@@ -9,13 +9,11 @@ var channelOptions = new GrpcChannelOptions
 var channel = GrpcChannel.ForAddress("http://localhost:8000", channelOptions);
 var client = new PageDownloader.PageDownloaderClient(channel);
 
-//var request = new DownloadRequest { Url = "https://ixbt.com" };
-var request = new DownloadRequest { Url = "https://habr.com/ru/feed/" };
+var request = new DownloadRequest { Url = "https://ixbt.com" };
 var response = await client.DownloadPageAsync(request);
 var zipBytes = response.ZipArchive.ToByteArray();
 // Write bytes to disk.
-//var path = Path.Combine(Path.GetTempPath(), "ixbt_test.zip");
-var path = Path.Combine("/home/dev/exchange", "habr.zip");
+var path = Path.Combine(Path.GetTempPath(), "ixbt_test.zip");
 await File.WriteAllBytesAsync(path, zipBytes);
 
 Console.WriteLine(
