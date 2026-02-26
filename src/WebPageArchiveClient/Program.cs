@@ -4,12 +4,16 @@ using WebPageArchive.GrpcProto;
 
 var channelOptions = new GrpcChannelOptions
 {
-    MaxReceiveMessageSize = 50 * 1024 * 1024 // 50 МБ
+    MaxReceiveMessageSize = 50 * 1024 * 1024 // 50 Mb
 };
 var channel = GrpcChannel.ForAddress("http://localhost:8000", channelOptions);
 var client = new PageDownloader.PageDownloaderClient(channel);
 
-var request = new DownloadRequest { Url = "https://ixbt.com" };
+var request = new DownloadRequest
+{
+    Url = "https://ixbt.com",
+    UseDefaultWaitScript = true
+};
 var response = await client.DownloadPageAsync(request);
 var zipBytes = response.ZipArchive.ToByteArray();
 // Write bytes to disk.

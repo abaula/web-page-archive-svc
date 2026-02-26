@@ -23,7 +23,7 @@ class GetPageEvaluateSettings : IGetPageEvaluateSettings
 
         if (string.IsNullOrWhiteSpace(waitScript))
         {
-            if (!_settings.UseDefaultScript)
+            if (!request.UseDefaultWaitScript)
                 return default;
 
             // Get default script from resource.
