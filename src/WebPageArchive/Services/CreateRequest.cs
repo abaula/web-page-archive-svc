@@ -8,6 +8,8 @@ class CreateRequest : ICreateRequest
 {
     public Request Execute(DownloadRequest request)
     {
-        return new Request(request.Url);
+        var waitScript = request.HasWaitScript ? request.WaitScript : null;
+        var waitTimeoutMs = request.HasWaitTimeoutMs ? (int?)request.WaitTimeoutMs : null;
+        return new Request(request.Url, waitScript, waitTimeoutMs);
     }
 }

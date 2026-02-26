@@ -1,0 +1,13 @@
+() => {
+    const imgs = Array.from(document.images);
+    if (!imgs.length) return true;
+    return Promise.all(
+        imgs.map(img => {
+            if (img.complete && img.naturalWidth !== 0) return true;
+            return new Promise(resolve => {
+                img.addEventListener('load', () => resolve(true), { once: true });
+                img.addEventListener('error', () => resolve(true), { once: true });
+            });
+        })
+    );
+}

@@ -2,7 +2,7 @@
 
 [Русская версия](README.ru.md)
 
-**Web Page Archive Service** is a service for downloading individual web pages through web scraping, archiving them into [ZIP](https://en.wikipedia.org/wiki/ZIP_(file_format)) files, and providing access via a [gRPC](https://en.wikipedia.org/wiki/GRPC) [API](https://en.wikipedia.org/wiki/API). The project captures page content, including its resources, and returns it in a convenient format.
+**Web Page Archive Service** is a utility designed for downloading individual web pages via web scraping. Functional access is provided through the [gRPC](https://en.wikipedia.org/wiki/GRPC) [API](https://en.wikipedia.org/wiki/API). The service enables capturing the full page content, including embedded assets, and storing it in the [MHTML](https://en.wikipedia.org/wiki/MHTML) format. The resulting data package is delivered as a [ZIP](https://en.wikipedia.org/wiki/ZIP_(file_format)) archive.
 
 ## Project Purpose
 

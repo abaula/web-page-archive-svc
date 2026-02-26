@@ -2,7 +2,11 @@
 using Grpc.Net.Client;
 using WebPageArchive.GrpcProto;
 
-var channel = GrpcChannel.ForAddress("http://localhost:8000");
+var channelOptions = new GrpcChannelOptions
+{
+    MaxReceiveMessageSize = 50 * 1024 * 1024 // 50 МБ
+};
+var channel = GrpcChannel.ForAddress("http://localhost:8000", channelOptions);
 var client = new PageDownloader.PageDownloaderClient(channel);
 
 var request = new DownloadRequest { Url = "https://ixbt.com" };
