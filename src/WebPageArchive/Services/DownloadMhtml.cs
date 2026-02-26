@@ -20,7 +20,7 @@ class DownloadMhtml : IDownloadMhtml
         _evaluateWithTimeout = evaluateWithTimeout;
     }
 
-    public async Task<string?> Execute(Request request)
+    public async Task<MhtmlResult?> Execute(Request request)
     {
         await using var context = await _browser.NewContextAsync();
         var page = await context.NewPageAsync();
@@ -33,9 +33,10 @@ class DownloadMhtml : IDownloadMhtml
         await page.GotoAsync(request.Url, gotoOptions);
 
         var pageEvaluateSettings = _getPageEvaluateSettings.Value.Execute(request);
+        var timeout = false;
 
         if (pageEvaluateSettings != null)
-            await _evaluateWithTimeout.Value.Execute(page, pageEvaluateSettings);
+            timeout = await _evaluateWithTimeout.Value.Execute(page, pageEvaluateSettings);
 
         // Create CDP‑session for the page
         await using var session = await context.NewCDPSessionAsync(page);
@@ -49,6 +50,8 @@ class DownloadMhtml : IDownloadMhtml
         // Get "data" field from json dictionary.
         var jsonString = result.ToString()!;
         var mhtmlJson = JsonDocument.Parse(jsonString);
-        return mhtmlJson.RootElement.GetProperty("data").GetString();
+        var mhtml = mhtmlJson.RootElement.GetProperty("data").GetString();
+
+        return new MhtmlResult(mhtml, timeout);
     }
 }

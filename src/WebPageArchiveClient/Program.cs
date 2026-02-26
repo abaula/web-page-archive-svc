@@ -21,6 +21,10 @@ var path = Path.Combine(Path.GetTempPath(), "ixbt_test.zip");
 await File.WriteAllBytesAsync(path, zipBytes);
 
 Console.WriteLine(
-    $"\u001b[32mResponse from \u001b[36m{response.OriginalUrl}\u001b[32m " +
-    $"has been written to \u001b[33m{path}\u001b[0m"
+    $"\u001b[37mResponse" +
+    $"\u001b[90m (WaitTimeout: {response.WaitTimeout})" +
+    $"\u001b[37m from" +
+    $"\u001b[34m {response.OriginalUrl}" +
+    $"\u001b[37m has been written to" +
+    $"\u001b[34m {path}\u001b[0m"
 );

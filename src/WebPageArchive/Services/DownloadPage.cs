@@ -17,13 +17,13 @@ class DownloadPage : IDownloadPage
 
     public async Task<Response> Execute(Request request)
     {
-        var mhtml = await _downloadMhtml.Value.Execute(request);
+        var mhtmlResult = await _downloadMhtml.Value.Execute(request);
 
-        if (mhtml == null)
+        if (string.IsNullOrWhiteSpace(mhtmlResult?.Mhtml))
             throw new InvalidOperationException();
 
-        var zipBytes = _createZipWithMhtml.Value.Execute(mhtml!, "index.mhtml");
+        var zipBytes = _createZipWithMhtml.Value.Execute(mhtmlResult.Mhtml!, "index.mhtml");
 
-        return new Response(request.Url, zipBytes);
+        return new Response(request.Url, zipBytes, mhtmlResult.Timeout);
     }
 }
