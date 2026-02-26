@@ -2,7 +2,7 @@
 
 [English version](README.md)
 
-Web Page Archive Service - это сервис для скачивания отдельных веб-страниц с использованием веб-скрейпинга, архивации в [ZIP](https://en.wikipedia.org/wiki/ZIP_(file_format)) и предоставления доступа через [gRPC](https://en.wikipedia.org/wiki/GRPC) [API](https://en.wikipedia.org/wiki/API). Проект позволяет захватывать контент страницы, включая ресурсы, и возвращать его в удобном формате.
+**Web Page Archive Service** - это приложение для скачивания отдельных веб-страниц с использованием веб-скрейпинга. Доступ к функционалу предоставлен через [gRPC](https://en.wikipedia.org/wiki/GRPC) [API](https://en.wikipedia.org/wiki/API). Проект позволяет захватывать контент страницы, включая ресурсы, и сохранять его в формате [MHTML](https://en.wikipedia.org/wiki/MHTML). Полученный контент возвращается в виде архива [ZIP](https://en.wikipedia.org/wiki/ZIP_(file_format)).
 
 ## Назначение проекта
 Сервис предназначен для автоматизированного скачивания и архивации одной веб-страницы в [ZIP-архив](https://en.wikipedia.org/wiki/ZIP_(file_format)) с помощью [Playwright](https://playwright.dev/) для скрейпинга. Он предоставляет [gRPC](https://en.wikipedia.org/wiki/GRPC)-интерфейс для интеграции в другие системы, упрощая скачивание веб-контента.

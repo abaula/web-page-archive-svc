@@ -17,7 +17,7 @@ public static class Program
         // Register gRPC.
         builder.Services.AddGrpc();
         // Register App Services.
-        ModuleBootstraper.Bootstrap(builder.Services);
+        ModuleBootstraper.Bootstrap(builder.Services, builder.Configuration);
         var app = builder.Build();
 
         // Configure the gRPC request pipeline.

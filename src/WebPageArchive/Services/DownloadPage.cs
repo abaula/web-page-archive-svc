@@ -17,7 +17,7 @@ class DownloadPage : IDownloadPage
 
     public async Task<Response> Execute(Request request)
     {
-        var mhtml = await _downloadMhtml.Value.Execute(request.Url);
+        var mhtml = await _downloadMhtml.Value.Execute(request);
 
         if (mhtml == null)
             throw new InvalidOperationException();

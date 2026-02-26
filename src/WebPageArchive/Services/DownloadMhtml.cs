@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Playwright;
+using WebPageArchive.Dto;
 using WebPageArchive.Services.Abstractions;
 
 namespace WebPageArchive.Services;
@@ -7,13 +8,19 @@ namespace WebPageArchive.Services;
 class DownloadMhtml : IDownloadMhtml
 {
     private readonly IBrowser _browser;
+    private readonly Lazy<IGetPageEvaluateSettings> _getPageEvaluateSettings;
+    private readonly Lazy<IEvaluateWithTimeout> _evaluateWithTimeout;
 
-    public DownloadMhtml(IBrowser browser)
+    public DownloadMhtml(IBrowser browser,
+        Lazy<IGetPageEvaluateSettings> getPageEvaluateSettings,
+        Lazy<IEvaluateWithTimeout> evaluateWithTimeout)
     {
         _browser = browser;
+        _getPageEvaluateSettings = getPageEvaluateSettings;
+        _evaluateWithTimeout = evaluateWithTimeout;
     }
 
-    public async Task<string?> Execute(string url)
+    public async Task<string?> Execute(Request request)
     {
         await using var context = await _browser.NewContextAsync();
         var page = await context.NewPageAsync();
@@ -23,7 +30,12 @@ class DownloadMhtml : IDownloadMhtml
         {
             WaitUntil = WaitUntilState.DOMContentLoaded
         };
-        await page.GotoAsync(url, gotoOptions);
+        await page.GotoAsync(request.Url, gotoOptions);
+
+        var pageEvaluateSettings = _getPageEvaluateSettings.Value.Execute(request);
+
+        if (pageEvaluateSettings != null)
+            await _evaluateWithTimeout.Value.Execute(page, pageEvaluateSettings);
 
         // Create CDP‑session for the page
         await using var session = await context.NewCDPSessionAsync(page);

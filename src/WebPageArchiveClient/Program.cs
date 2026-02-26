@@ -2,14 +2,20 @@
 using Grpc.Net.Client;
 using WebPageArchive.GrpcProto;
 
-var channel = GrpcChannel.ForAddress("http://localhost:8000");
+var channelOptions = new GrpcChannelOptions
+{
+    MaxReceiveMessageSize = 50 * 1024 * 1024 // 50 МБ
+};
+var channel = GrpcChannel.ForAddress("http://localhost:8000", channelOptions);
 var client = new PageDownloader.PageDownloaderClient(channel);
 
-var request = new DownloadRequest { Url = "https://ixbt.com" };
+//var request = new DownloadRequest { Url = "https://ixbt.com" };
+var request = new DownloadRequest { Url = "https://habr.com/ru/feed/" };
 var response = await client.DownloadPageAsync(request);
 var zipBytes = response.ZipArchive.ToByteArray();
 // Write bytes to disk.
-var path = Path.Combine(Path.GetTempPath(), "ixbt_test.zip");
+//var path = Path.Combine(Path.GetTempPath(), "ixbt_test.zip");
+var path = Path.Combine("/home/dev/exchange", "habr.zip");
 await File.WriteAllBytesAsync(path, zipBytes);
 
 Console.WriteLine(
